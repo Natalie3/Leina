@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+            <h1 style="text-align:center;">База данных: Библиотека</h1>
+
+            <h2>Экземпляр книги</h2>
+             <h4>Добавить новую книгу</h4>
+             <form action="/Copy_of_the_book/" method=post>
+                 <h6>ФИО Автора </h6><input type=text name="fio_author" size=100 height=100% >
+                 <h6>Название </h6><input type=text name="title" size=100 height=100% >
+                 <h6>Жанр </h6><input type=text name="genre" size="20" height=100% >
+                 <h6>Издательство</h6><input type=text name="publishing_house" size=20 height=100% >
+                 <h6>Год_издания</h6><input type=text name="imprint_date" size=4 height=100%>
+                 {% csrf_token %}
+
+                <input type="submit"/>
+                </form>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th>ID экземпляра книги</th>
+                  <th>Фамилия автора</th>
+                  <th>Название</th>
+                  <th>Жанр</th>
+                  <th>Издательство</th>
+                  <th>Год издания</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for copy_of_the_book in copy_of_the_book_list %}
+                        <tr>
+                            <th scope="row">{{copy_of_the_book.id}}</th>
+                            <td>{{copy_of_the_book.fio_author}}</td>
+                            <td>{{copy_of_the_book.title}}</td>
+                            <td>{{copy_of_the_book.genre}}</td>
+                            <td>{{copy_of_the_book.publishing_house}}</td>
+                            <td>{{copy_of_the_book.imprint_date}}</td>
+                            <td><form action='/delete_book/' method=post>
+                                {% csrf_token %}
+                                <button name="delete_book" value="{{copy_of_the_book.id}}">Удалить</button>
+                            </form> </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h2>Читатель</h2>
+            <h4>Записать в таблицу нового читателя</h4>
+            <form action="/Reader/" method=post>
+                 <h4>Даты указывать в формате : YYYY-MM-DD </h4>
+                 <h6>Фамилия</h6> <input type=text name="surname" size=30 height=100% >
+                 <h6>Имя</h6> <input type=text name="name" size=30 height=100% >
+                 <h6>Отчество</h6> <input type=text name="patronymic" size=30 height=100% >
+                 <h6>Дата рождения</h6> <input type="text" name="dob" size=20 height=100%>
+                 <h6>Адрес </h6><input type=text name="address" size=30 height=100%>
+                 {% csrf_token %}
+
+                <input type="submit"/>
+                </form>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th>Номер читательского билета</th>
+                  <th>Фамилия</th>
+                  <th>Имя</th>
+                  <th>Отчество</th>
+                  <th>Дата рождения</th>
+                  <th>Адрес</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for Reader in reader_list %}
+                        <tr>
+                            <th scope="row">{{Reader.id}}</th>
+                            <td>{{Reader.surname}}</td>
+                            <td>{{Reader.name}}</td>
+                            <td>{{Reader.patronymic}}</td>
+                            <td>{{Reader.dob}}</td>
+                            <td>{{Reader.address}}</td>
+                            <td><form action='/delete_reader/' method=post>
+                                {% csrf_token %}
+                                <button name="delete_reader" value="{{Reader.id}}">Удалить</button>
+                            </form> </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h2>Выдача книг</h2>
+             <h4>Добавить новую запись</h4>
+             <form action="/Book_lending/" method=post>
+                 <h4>Даты указывать в формате : YYYY-MM-DD </h4>
+
+                 <h6>ID экземпляра книги</h6> <select name="id_book" class="selectpicker">
+                  {% for copy_of_the_book in copy_of_the_book_list %}
+                <option value="{{copy_of_the_book.id}}">{{copy_of_the_book.id}}</option>
+                    {% endfor %}
+                </select>
+
+                 <h6>Номер читательского билета</h6> <select name="id_reader" class="selectpicker">
+                  {% for reader in reader_list %}
+                <option value="{{reader.id}}">{{reader.id}}</option>
+                    {% endfor %}
+                </select>
+
+                 <h6>Дата выдачи</h6> <input type=text name="date_of_issue" size=20 height=100% >
+                 <h6>Дата возврата</h6> <input type="text" name="return_date" size=20 height=100%>
+                 <h6>Дата предполагаемого возврата</h6><input type=text name="expected_return_date" size=20 height=100%>
+                 <h6>Задержка книги </h6><input type=text name="delay_of_book" size=8 height=100%>
+                 {% csrf_token %}
+                  <input type="submit"/>
+                </form>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th>Номер транзакции</th>
+                  <th>ID экемпляра книги</th>
+                  <th>Номер читатльского билета</th>
+                  <th>Дата выдачи</th>
+                  <th>Дата возврата</th>
+                  <th>Дата предполагаемого возврата</th>
+                  <th>Задержка книги</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for Book_lending in book_lending_list %}
+                        <tr>
+                            <th scope="row">{{Book_lending.id}}</th>
+                            <td>{{Book_lending.id_book.id}}</td>
+                            <td>{{Book_lending.id_reader.id}}</td>
+                            <td>{{Book_lending.date_of_issue}}</td>
+                            <td>{{Book_lending.return_date}}</td>
+                            <td>{{Book_lending.expected_return_date}}</td>
+                            <td>{{Book_lending.delay_of_book}}</td>
+                            <td><form action='/delete_lending/' method=post>
+                                 {% csrf_token %}
+                                  <button name="delete_lending" value="{{Book_lending.id}}">Удалить</button>
+                                 </form></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h2>Задержка</h2>
+            <h4>Заполнить задержку</h4>
+             <form action="/Delay/" method=post>
+                 <h6>Номер транзакции </h6><select name="id_lending" class="selectpicker">
+                  {% for book_lending in book_lending_list %}
+                <option value="{{book_lending.id}}">{{book_lending.id}}</option>
+                    {% endfor %}
+                </select>
+                 <h6>Выплата(True или False) </h6><input type=text name="payment" size=5 height=100% >
+                 {% csrf_token %}
+                  <input type="submit"/>
+                </form>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th>Номер транзакции</th>
+                  <th>Выплата</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for Delay in delay_list %}
+                        <tr>
+                            <td>{{Delay.id_lending.id}}</td>
+                            <td>{{Delay.payment}}</td>
+                            <td><form action='/delete_delay/' method=post>
+                                 {% csrf_token %}
+                                  <button name="delete_delay" value="{{Delay.id_lending.id}}">Удалить</button>
+                                 </form></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+</div>
+</body>
+</html>
